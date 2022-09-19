@@ -30,6 +30,7 @@
         "iam:listrolepolicies",
         "iam:Listroles",
         "iam:PassRole",
+        "iam:PutRolePolicy",
         "kms:*",
         "lakeformation:*",
         "lambda:*",
