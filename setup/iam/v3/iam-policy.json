@@ -1,4 +1,4 @@
-[
+  [
     {
       "Effect": "Allow",
       "Action": [
@@ -49,6 +49,7 @@
         "secretsmanager:*",
         "serverlessrepo:*",
         "sns:*",
+        "sqlworkbench:*",
         "ssm:*",
         "ssm:DeleteParameter",
         "ssm:DescribeDocumentParameters",
@@ -68,4 +69,4 @@
       ],
       "Resource": "*"
     }
-]
+  ]
