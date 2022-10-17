@@ -798,21 +798,6 @@ export class DataEduEeStack extends cdk.Stack {
     // Set Raw Bucket Path
     const rawBucketPath = 's3://'+rawBucket.bucketName+'/';
 
-    // sisdemo_crawler: Crawls S3 target path; creates db_raw_sisdemo tables
-    const sisdemoCrawler = new glue.CfnCrawler(this, 'dataeduSisdemoCrawler', {
-      role: glueCrawlerRole.roleArn,
-      targets: {
-        s3Targets: [{
-          path: rawBucketPath+'sisdb/sisdemo/',
-        }],
-      },
-    
-      // the properties below are optional
-      databaseName: 'db_raw_sisdemo',
-      description: 'SIS demo data crawler.',
-      name: 'dataedu-sisdemo-crawler',
-    });
-
     // lmsdemo_crawler: Crawls S3 target path; creates db_raw_lmsdemo tables
     const lmsdemoCrawler = new glue.CfnCrawler(this, 'dataedLmsdemoCrawler', {
       role: glueCrawlerRole.roleArn,
@@ -826,6 +811,21 @@ export class DataEduEeStack extends cdk.Stack {
       databaseName: 'db_raw_lmsdemo',
       description: 'LMS demo data crawler.',
       name: 'dataedu-lmsdemo-crawler',
+    });
+    
+    // sisdemo_crawler: Crawls S3 target path; creates db_raw_sisdemo tables
+    const sisdemoCrawler = new glue.CfnCrawler(this, 'dataeduSisdemoCrawler', {
+      role: glueCrawlerRole.roleArn,
+      targets: {
+        s3Targets: [{
+          path: rawBucketPath+'sisdb/sisdemo/',
+        }],
+      },
+    
+      // the properties below are optional
+      databaseName: 'db_raw_sisdemo',
+      description: 'SIS demo data crawler.',
+      name: 'dataedu-sisdemo-crawler',
     });
   }
 }
