@@ -42,6 +42,8 @@
         "rds:*",
         "redshift:*",
         "redshift-data:*",
+        "redsift-serverless:*",
+        "sagemaker:*",
         "s3:*",
         "s3-object-lambda:*",
         "secretsmanager:*",
