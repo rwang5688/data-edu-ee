@@ -19,11 +19,13 @@ export class DataEduEeStack extends cdk.Stack {
 
     // Event Engine Parameters
     // Remove Default for EE Modules
-    const EETeamId = new cdk.CfnParameter(this, "EETeamId", {
-      type: "String",
-      description: "Unique Event Engine per-Team GUID.",
-    });
-    const GUID = EETeamId.valueAsString;
+    //const EETeamId = new cdk.CfnParameter(this, "EETeamId", {
+    //  type: "String",
+    //  description: "Unique Event Engine per-Team GUID.",
+    //});
+    //const GUID = EETeamId.valueAsString;
+    const GUID = cdk.Stack.of(this).stackId;
+    console.log("GUID: " + GUID);
 
     // DMS Role Creation CloudFormation Parameter + Condition
     const createDMSRole = new cdk.CfnParameter(this, "createDMSRole", {
@@ -758,7 +760,7 @@ export class DataEduEeStack extends cdk.Stack {
         role: fetchDemoDataLambdaRole,
         environment: {
           SOURCE_DATA_BUCKET_NAME_PREFIX: 'ee-assets-prod-',
-          SIS_DEMO_MOCK_DATA_PREFIX: 'modules/f7ff818991a14cfb80e2617aad4431d1/v1/mockdata/sis_demo_parquet/',
+          SIS_DEMO_MOCK_DATA_PREFIX: 'modules/cfdd4f678e99415a9c1f11342a3a9887/v1/mockdata/sis_demo_parquet/',
           LMS_DEMO_MOCK_DATA_PREFIX: 'modules/cfdd4f678e99415a9c1f11342a3a9887/v1/mockdata/lms_demo/v1/',
           RAW_DATA_BUCKET_NAME: rawBucket.bucketName,
           SIS_DEMO_RAW_DATA_PREFIX: 'sisdb/sisdemo/',
