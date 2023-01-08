@@ -2173,7 +2173,7 @@
        "Ref": "dataeduSISLambdaLayer2B86FA17"
       }
      ],
-     "MemorySize": 512,
+     "MemorySize": 1769,
      "Runtime": "python3.8",
      "Timeout": 900,
      "VpcConfig": {
@@ -2260,7 +2260,7 @@
      "Description": "Lambda function that fetches a file from a URL and stores it in a S3 bucket",
      "FunctionName": "dataedu-fetch-s3-data",
      "Handler": "lambda_handler.lambda_handler",
-     "MemorySize": 256,
+     "MemorySize": 1769,
      "Runtime": "python3.7",
      "Timeout": 600
     },
@@ -2298,7 +2298,7 @@
      "Description": "Lambda function that mimics invoking an API to obtain data from a SaaS app",
      "FunctionName": "dataedu-fetch-lmsapi",
      "Handler": "lambda_function.lambda_handler",
-     "MemorySize": 256,
+     "MemorySize": 1769,
      "Runtime": "python3.7",
      "Timeout": 600
     },
@@ -2560,7 +2560,7 @@
      },
      "FunctionName": "dataedu-fetch-demo-data",
      "Handler": "dataedu_fetch_demo_data.lambda_handler",
-     "MemorySize": 256,
+     "MemorySize": 1769,
      "Runtime": "python3.7",
      "Timeout": 900
     },

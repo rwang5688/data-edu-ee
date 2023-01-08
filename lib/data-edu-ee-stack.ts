@@ -447,7 +447,7 @@ export class DataEduEeStack extends cdk.Stack {
         runtime: lambda.Runtime.PYTHON_3_8,
         handler: "lambda_function.lambda_handler",
         functionName: "dataedu-load-sisdb",
-        memorySize: 512,
+        memorySize: 1769,
         timeout: cdk.Duration.seconds(900),
         layers: [sisLambdaLayer],
         environment: {
@@ -547,7 +547,7 @@ export class DataEduEeStack extends cdk.Stack {
         runtime: lambda.Runtime.PYTHON_3_7,
         handler: "lambda_handler.lambda_handler",
         functionName: "dataedu-fetch-s3-data",
-        memorySize: 256,
+        memorySize: 1769,
         timeout: cdk.Duration.seconds(600),
         role: lmsS3FetchRole,
         description:
@@ -607,7 +607,7 @@ export class DataEduEeStack extends cdk.Stack {
         runtime: lambda.Runtime.PYTHON_3_7,
         handler: "lambda_function.lambda_handler",
         functionName: "dataedu-fetch-lmsapi",
-        memorySize: 256,
+        memorySize: 1769,
         timeout: cdk.Duration.seconds(600),
         role: lmsAPIFetchRole,
         description:
@@ -755,7 +755,7 @@ export class DataEduEeStack extends cdk.Stack {
         runtime: lambda.Runtime.PYTHON_3_7,
         handler: "dataedu_fetch_demo_data.lambda_handler",
         functionName: "dataedu-fetch-demo-data",
-        memorySize: 256,
+        memorySize: 1769,
         timeout: cdk.Duration.seconds(900),
         role: fetchDemoDataLambdaRole,
         environment: {

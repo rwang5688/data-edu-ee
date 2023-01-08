@@ -2123,7 +2123,7 @@
          "Ref": "dataeduSISLambdaLayer2B86FA17"
         }
        ],
-       "MemorySize": 512,
+       "MemorySize": 1769,
        "Runtime": "python3.8",
        "Timeout": 900,
        "VpcConfig": {
@@ -2210,7 +2210,7 @@
        "Description": "Lambda function that fetches a file from a URL and stores it in a S3 bucket",
        "FunctionName": "dataedu-fetch-s3-data",
        "Handler": "lambda_handler.lambda_handler",
-       "MemorySize": 256,
+       "MemorySize": 1769,
        "Runtime": "python3.7",
        "Timeout": 600
       },
@@ -2248,7 +2248,7 @@
        "Description": "Lambda function that mimics invoking an API to obtain data from a SaaS app",
        "FunctionName": "dataedu-fetch-lmsapi",
        "Handler": "lambda_function.lambda_handler",
-       "MemorySize": 256,
+       "MemorySize": 1769,
        "Runtime": "python3.7",
        "Timeout": 600
       },
@@ -2499,7 +2499,7 @@
        "Environment": {
         "Variables": {
          "SOURCE_DATA_BUCKET_NAME_PREFIX": "ee-assets-prod-",
-         "SIS_DEMO_MOCK_DATA_PREFIX": "modules/f7ff818991a14cfb80e2617aad4431d1/v1/mockdata/sis_demo_parquet/",
+         "SIS_DEMO_MOCK_DATA_PREFIX": "modules/cfdd4f678e99415a9c1f11342a3a9887/v1/mockdata/sis_demo_parquet/",
          "LMS_DEMO_MOCK_DATA_PREFIX": "modules/cfdd4f678e99415a9c1f11342a3a9887/v1/mockdata/lms_demo/v1/",
          "RAW_DATA_BUCKET_NAME": {
           "Ref": "dataeduRawBucket945ADDC3"
@@ -2510,7 +2510,7 @@
        },
        "FunctionName": "dataedu-fetch-demo-data",
        "Handler": "dataedu_fetch_demo_data.lambda_handler",
-       "MemorySize": 256,
+       "MemorySize": 1769,
        "Runtime": "python3.7",
        "Timeout": 900
       },
