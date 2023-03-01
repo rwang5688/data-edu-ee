@@ -18,6 +18,7 @@
       "ec2:*",
       "events:*",
       "glue:*",
+      "iam:Add*",
       "iam:AttachRolePolicy",
       "iam:Create*",
       "iam:CreatePolicy",
