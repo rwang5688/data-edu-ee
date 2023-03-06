@@ -122,6 +122,18 @@ Resources:
             Action :
               - sts:AssumeRole
       Path : /
+      Policies:
+        -
+          PolicyName: RedshiftLakeFormationPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                  - glue:*
+                  - lakeformation:GetDataAccess
+                Resource: "*"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess
