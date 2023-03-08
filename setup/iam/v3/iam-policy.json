@@ -39,6 +39,7 @@
         "iam:listrolepolicies",
         "iam:Listroles",
         "iam:PassRole",
+        "iam:Put*",
         "iam:PutRolePolicy",
         "iam:Remove*",
         "kms:*",
