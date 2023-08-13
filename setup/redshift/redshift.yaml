@@ -65,8 +65,7 @@ Conditions:
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
-      -
-        Label:
+      - Label:
           default: "Connection Details"
         Parameters:
           - DatabaseName
@@ -74,6 +73,9 @@ Metadata:
           - AdminPassword
           - InboundTraffic
           - PortNumber
+      - Label:
+          default: "Infrastructure Details"
+        Parameters:
           - BaseRPU
           - ConsumerCluster
           - NodeType
@@ -143,7 +145,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Condition: OptInConsumerCluster
     Properties:
-      TemplateURL: 'https://ee-assets-prod-us-east-1.s3.amazonaws.com/modules/cfdd4f678e99415a9c1f11342a3a9887/v1/templates/DataSharingCluster.yaml'
+      TemplateURL: 'https://ws-assets-prod-iad-r-iad-ed304a55c2ca1aee.s3.amazonaws.com/296c402e-cadd-43f5-956b-116895a050f9/v1/templates/DataSharingCluster.yaml'
       Parameters:
         DatabaseName:
           Ref: DatabaseName

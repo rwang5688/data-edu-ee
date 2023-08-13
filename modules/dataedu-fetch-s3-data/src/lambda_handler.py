@@ -47,7 +47,7 @@ def lambda_handler(event, context):
             'message': 'key {} already exists - skipping'.format(key)
         })
 
-    with open('s3://{}/{}'.format(s3_bucket, key), 'wb', ignore_ext=True) as fout:
+    with open('s3://{}/{}'.format(s3_bucket, key), 'wb', compression="disable") as fout:
         with requests.get(file_url, stream=True) as r:
             r.raise_for_status()
             for chunk in r.iter_content(chunk_size=chunk_size):

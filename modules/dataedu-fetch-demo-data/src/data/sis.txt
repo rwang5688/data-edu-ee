@@ -1,0 +1,12 @@
+course/LOAD00000001.parquet
+course_outcome/LOAD00000001.parquet
+course_registration/LOAD00000001.parquet
+course_schedule/LOAD00000001.parquet
+degree_plan/LOAD00000001.parquet
+department/LOAD00000001.parquet
+ed_level/LOAD00000001.parquet
+faculty/LOAD00000001.parquet
+school/LOAD00000001.parquet
+semester/LOAD00000001.parquet
+student/LOAD00000001.parquet
+university/LOAD00000001.parquet

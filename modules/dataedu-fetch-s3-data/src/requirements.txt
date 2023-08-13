@@ -1,2 +1,3 @@
-boto3
+requests
 smart_open
+urllib3<2

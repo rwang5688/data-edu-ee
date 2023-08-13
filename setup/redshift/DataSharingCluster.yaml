@@ -78,6 +78,7 @@ Resources:
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties :
+      RoleName: RedshiftConsumerClusterLambdaExecutionRole
       AssumeRolePolicyDocument:
         Version : 2012-10-17
         Statement :
@@ -217,10 +218,6 @@ Outputs:
   ConsumerClusterEndpoint:
       Description: Cluster endpoint for data sharing cluster
       Value: !Sub "${ConsumerCluster.Endpoint.Address}:${ConsumerCluster.Endpoint.Port}"
-  RedshiftDataSharingRoleName:
-    Description: Name of Redshift Role for data sharing cluster
-    Value:
-      Ref: RedshiftRole
   ConsumerClusterName:
     Description: Name of data sharing cluster
     Value:
