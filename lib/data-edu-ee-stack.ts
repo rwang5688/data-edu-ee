@@ -17,17 +17,8 @@ export class DataEduEeStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Event Engine Parameters
-    // Remove Default for EE Modules
-    //const EETeamId = new cdk.CfnParameter(this, "EETeamId", {
-    //  type: "String",
-    //  description: "Unique Event Engine per-Team GUID.",
-    //});
-    //const GUID = EETeamId.valueAsString;
-    const GUID = cdk.Stack.of(this).stackId;
-    console.log("GUID: " + GUID);
 
-    // DMS Role Creation CloudFormation Parameter + Condition
+    // Create DMS Role Parameter
     const createDMSRole = new cdk.CfnParameter(this, "createDMSRole", {
       allowedValues: ["true", "false"],
       constraintDescription: "Value must be set to true or false.",
@@ -36,6 +27,7 @@ export class DataEduEeStack extends cdk.Stack {
         "Set this value to false if the 'dms-vpc-role' IAM Role has already been created in this AWS Account.",
     });
 
+    // Create DMS Role Condition
     const createDMSRoleCondition = new cdk.CfnCondition(
       this,
       "createDMSRoleCondition",
@@ -43,6 +35,67 @@ export class DataEduEeStack extends cdk.Stack {
         expression: cdk.Fn.conditionEquals(createDMSRole, "true"),
       }
     );
+
+    // Workshop Studio Static Bucket Name Table by Region
+    const wsStaticBucketNameTable = new cdk.CfnMapping(this, 'wsStaticBucketNameTable', {
+      mapping: {
+        'ap-northeast-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-nrt-2cb4b4649d0e0f94',
+        },
+        'ap-northeast-2': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-icn-ced060f0d38bc0b0',
+        },
+        'ap-northeast-3': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-kix-c2a28ad4e55ea53a',
+        },
+        'ap-south-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-bom-431207042d319a2d',
+        },
+        'ap-southeast-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-sin-694a125e41645312',
+        },
+        'ap-southeast-2': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-syd-b04c62a5f16f7b2e',
+        },
+        'ca-central-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-yul-5c2977cd61bca1f3',
+        },
+        'eu-central-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-fra-b129423e91500967',
+        },
+        'eu-north-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-arn-580aeca3990cef5a',
+        },
+        'eu-west-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-dub-85e3be25bd827406',
+        },
+        'eu-west-2': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-lhr-cc4472a651221311',
+        },
+        'eu-west-3': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-cdg-9e76383c31ad6229',
+        },
+        'us-east-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-iad-ed304a55c2ca1aee',
+        },
+        'us-east-2': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-cmh-8d6e9c21a4dec77d',
+        },
+        'us-west-1': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-sfo-f61fc67057535f1b',
+        },
+        'us-west-2': {
+          wsStaticBucketName: 'ws-assets-prod-iad-r-pdx-f3b3f9f1a7d6a3d0',
+        },
+      }
+    });
+    const wsStaticBucketName = wsStaticBucketNameTable.findInMap(cdk.Aws.REGION, 'wsStaticBucketName');
+
+    // Workshop Studio Bucket Prefix
+    const wsBucketPrefix = "296c402e-cadd-43f5-956b-116895a050f9/";
+
+    // GUID for Raw, Curated, Results Bucket Names
+    const GUID = cdk.Stack.of(this).stackId;
 
     // KMS Key Name
     const KeyName = "dataedu-key";
@@ -251,7 +304,7 @@ export class DataEduEeStack extends cdk.Stack {
 
     // Create VPC
     const vpc = new ec2.Vpc(this, "dataeduVPC", {
-      cidr: "10.0.0.0/16",
+      ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
       natGateways: 2,
       maxAzs: 2,
       subnetConfiguration: [
@@ -329,7 +382,7 @@ export class DataEduEeStack extends cdk.Stack {
     // Create RDS Instance, defaults to m5.large
     const rdsInstance = new rds.DatabaseInstance(this, "dataeduRDSInstance", {
       engine: rds.DatabaseInstanceEngine.mysql({
-        version: rds.MysqlEngineVersion.VER_8_0_26,
+        version: rds.MysqlEngineVersion.VER_8_0,
       }),
       vpc: vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
@@ -412,11 +465,11 @@ export class DataEduEeStack extends cdk.Stack {
       }
     );*/
 
-    // Import Event Engine Asset Bucket
-    const eeBucket = s3.Bucket.fromBucketName(
+    // Set Workshop Studio Static Bucket
+    const wsStaticBucket = s3.Bucket.fromBucketName(
       this,
-      "dataeduEEBucketName",
-      "ee-assets-prod-" + cdk.Stack.of(this).region
+      "dataeduWSStaticBucketName",
+      wsStaticBucketName
     );
 
     // Create SIS Import Lambda Function Layer for MySQL
@@ -425,12 +478,11 @@ export class DataEduEeStack extends cdk.Stack {
       "dataeduSISLambdaLayer",
       {
         code: lambda.Code.fromBucket(
-          eeBucket,
-          "modules/cfdd4f678e99415a9c1f11342a3a9887/v1/lambda/mysql_layer.zip"
+          wsStaticBucket,
+          wsBucketPrefix + "v1/lambda/mysql_layer.zip"
         ),
         compatibleRuntimes: [
-          lambda.Runtime.PYTHON_3_7,
-          lambda.Runtime.PYTHON_3_8,
+          lambda.Runtime.PYTHON_3_9,
         ],
       }
     );
@@ -441,10 +493,10 @@ export class DataEduEeStack extends cdk.Stack {
       "dataeduSISLambdaFunction",
       {
         code: lambda.Code.fromBucket(
-          eeBucket,
-          "modules/cfdd4f678e99415a9c1f11342a3a9887/v1/lambda/dataedu-load-sisdb.zip"
+          wsStaticBucket,
+          wsBucketPrefix + "v1/lambda/dataedu-load-sisdb.zip"
         ),
-        runtime: lambda.Runtime.PYTHON_3_8,
+        runtime: lambda.Runtime.PYTHON_3_9,
         handler: "lambda_function.lambda_handler",
         functionName: "dataedu-load-sisdb",
         memorySize: 1769,
@@ -528,11 +580,15 @@ export class DataEduEeStack extends cdk.Stack {
       parameterName: "/dataedu/lms-demo/state",
       description: "SSM Parameter for mock LMS integration.",
       stringValue:
-        '{"base_url":"ee-assets-prod-' +
-        cdk.Stack.of(this).region +
-        '.s3.amazonaws.com/modules/cfdd4f678e99415a9c1f11342a3a9887/v1/mockdata/lms_demo","version": "v1", "current_date": "2020-08-17", "perform_initial_load": "1","target_bucket":"' +
-        rawBucket.bucketName +
-        '", "base_s3_prefix":"lmsapi"}',
+        '{"base_url":"' +
+        wsStaticBucket.bucketName +
+        '.s3.amazonaws.com/' +
+        wsBucketPrefix +
+        'v1/mockdata/lms_demo",' +
+        '"version": "v1", "current_date": "2020-08-17", "perform_initial_load": "1",' +
+        '"target_bucket":"' +
+        rawBucket.bucketName + '",' +
+        '"base_s3_prefix":"lmsapi"}',
     });
 
     // Create LMS S3 Fetch Lambda Function
@@ -541,10 +597,10 @@ export class DataEduEeStack extends cdk.Stack {
       "dataeduLMSS3FetchLambda",
       {
         code: lambda.Code.fromBucket(
-          eeBucket,
-          "modules/cfdd4f678e99415a9c1f11342a3a9887/v1/lambda/dataedu-fetch-s3-data.zip"
+          wsStaticBucket,
+          wsBucketPrefix + "v1/lambda/dataedu-fetch-s3-data.zip"
         ),
-        runtime: lambda.Runtime.PYTHON_3_7,
+        runtime: lambda.Runtime.PYTHON_3_9,
         handler: "lambda_handler.lambda_handler",
         functionName: "dataedu-fetch-s3-data",
         memorySize: 1769,
@@ -601,10 +657,10 @@ export class DataEduEeStack extends cdk.Stack {
       "dataeduLMSAPIFetchLambda",
       {
         code: lambda.Code.fromBucket(
-          eeBucket,
-          "modules/cfdd4f678e99415a9c1f11342a3a9887/v1/lambda/dataedu-fetch-lmsapi.zip"
+          wsStaticBucket,
+          wsBucketPrefix + "v1/lambda/dataedu-fetch-lmsapi.zip"
         ),
-        runtime: lambda.Runtime.PYTHON_3_7,
+        runtime: lambda.Runtime.PYTHON_3_9,
         handler: "lambda_function.lambda_handler",
         functionName: "dataedu-fetch-lmsapi",
         memorySize: 1769,
@@ -695,7 +751,7 @@ export class DataEduEeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["s3:List*"],
         resources: [
-          eeBucket.bucketArn,
+          wsStaticBucket.bucketArn,
           rawBucket.bucketArn,
         ],
       })
@@ -704,7 +760,7 @@ export class DataEduEeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["s3:GetObject"],
         resources: [
-          eeBucket.bucketArn + "/*",
+          wsStaticBucket.bucketArn + "/*",
           rawBucket.bucketArn + "/*",
         ],
       })
@@ -749,19 +805,19 @@ export class DataEduEeStack extends cdk.Stack {
       "dataeduFetchDemoDataLambda",
       {
         code: lambda.Code.fromBucket(
-          eeBucket,
-          "modules/cfdd4f678e99415a9c1f11342a3a9887/v1/lambda/dataedu-fetch-demo-data.zip"
+          wsStaticBucket,
+          wsBucketPrefix + "v1/lambda/dataedu-fetch-demo-data.zip"
         ),
-        runtime: lambda.Runtime.PYTHON_3_7,
+        runtime: lambda.Runtime.PYTHON_3_9,
         handler: "dataedu_fetch_demo_data.lambda_handler",
         functionName: "dataedu-fetch-demo-data",
         memorySize: 1769,
         timeout: cdk.Duration.seconds(900),
         role: fetchDemoDataLambdaRole,
         environment: {
-          SOURCE_DATA_BUCKET_NAME_PREFIX: 'ee-assets-prod-',
-          SIS_DEMO_MOCK_DATA_PREFIX: 'modules/cfdd4f678e99415a9c1f11342a3a9887/v1/mockdata/sis_demo_parquet/',
-          LMS_DEMO_MOCK_DATA_PREFIX: 'modules/cfdd4f678e99415a9c1f11342a3a9887/v1/mockdata/lms_demo/v1/',
+          SOURCE_DATA_BUCKET_NAME: wsStaticBucket.bucketName,
+          SIS_DEMO_MOCK_DATA_PREFIX: wsBucketPrefix + 'v1/mockdata/sis_demo_parquet/',
+          LMS_DEMO_MOCK_DATA_PREFIX: wsBucketPrefix + 'v1/mockdata/lms_demo/v1/',
           RAW_DATA_BUCKET_NAME: rawBucket.bucketName,
           SIS_DEMO_RAW_DATA_PREFIX: 'sisdb/sisdemo/',
           LMS_DEMO_RAW_DATA_PREFIX: 'lmsapi/'
