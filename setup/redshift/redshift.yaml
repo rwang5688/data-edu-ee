@@ -196,14 +196,6 @@ Resources:
       AvailabilityZone: !Select [2, !GetAZs ""]
       VpcId:
         Ref: VPC     
-  Subnet4:
-      Type: AWS::EC2::Subnet
-      Properties:
-        MapPublicIpOnLaunch: true
-        CidrBlock: 10.0.3.0/24
-        AvailabilityZone: !Select [3, !GetAZs ""]
-        VpcId:
-          Ref: VPC
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -269,13 +261,6 @@ Resources:
         Ref: Subnet3
       RouteTableId:
         Ref: RouteTable
-  SubnetRouteTableAssociation4:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId:
-        Ref: Subnet4
-      RouteTableId:
-        Ref: RouteTable                
   RedshiftServerlessNamespace:
     Type: 'AWS::RedshiftServerless::Namespace'
     Properties:
@@ -307,7 +292,6 @@ Resources:
         - Ref: Subnet1
         - Ref: Subnet2
         - Ref: Subnet3
-        - Ref: Subnet4
       SecurityGroupIds:
         - Ref: SecurityGroup
     DependsOn:
