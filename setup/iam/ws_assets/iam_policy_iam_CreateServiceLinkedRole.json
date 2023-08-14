@@ -9,7 +9,8 @@
         "iam:PutRolePolicy"
       ],
       "Resource": [
-        "arn:aws:iam::{{.AccountId}}:role/RedshiftServerlessImmersionRole"
+        "arn:aws:iam::{{.AccountId}}:role/RedshiftServerlessImmersionRole",
+        "arn:aws:iam::{{.AccountId}}:role/RedshiftConsumerClusterLambdaExecutionRole"
       ]
     }
   ]

@@ -9,7 +9,11 @@
       ],
       "Resource": [
         "arn:aws:iam::{{.AccountId}}:role/dataedu-dms-target-execution-role",
-        "arn:aws:iam::{{.AccountId}}:role/RedshiftServerlessImmersionRole"
+        "arn:aws:iam::{{.AccountId}}:role/service-role/AWSGlueDataBrewServiceRole-student-profile-job",
+        "arn:aws:iam::{{.AccountId}}:role/service-role/AWSGlueDataBrewServiceRole-student-ext-2-project",
+        "arn:aws:iam::{{.AccountId}}:role/service-role/AWSGlueDataBrewServiceRole-student-ext-2-recipe-job",
+        "arn:aws:iam::{{.AccountId}}:role/RedshiftServerlessImmersionRole",
+        "arn:aws:iam::{{.AccountId}}:role/RedshiftConsumerClusterLambdaExecutionRole"
       ]
     }
   ]
