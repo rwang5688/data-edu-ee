@@ -29,6 +29,7 @@
         "iam:CreatePolicy",
         "iam:CreatePolicyVersion",
         "iam:CreateRole",
+        "iam:DeletePolicy",
         "iam:DeletePolicyVersion",
         "iam:DeleteRole",
         "iam:DeleteRolePolicy",
