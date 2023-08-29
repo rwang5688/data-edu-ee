@@ -251,6 +251,9 @@
     "eu-west-3": {
      "wsStaticBucketName": "ws-assets-prod-iad-r-cdg-9e76383c31ad6229"
     },
+    "sa-east-1": {
+     "wsStaticBucketName": "ws-assets-prod-iad-r-gru-527b8c19222c1182"
+    },
     "us-east-1": {
      "wsStaticBucketName": "ws-assets-prod-iad-r-iad-ed304a55c2ca1aee"
     },
