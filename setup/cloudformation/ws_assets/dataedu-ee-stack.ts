@@ -13,7 +13,7 @@ import * as targets from "aws-cdk-lib/aws-events-targets";
 import * as glue from 'aws-cdk-lib/aws-glue';
 import { Construct } from "constructs";
 
-export class DataEduEeStack extends cdk.Stack {
+export class DataeduEeStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -95,15 +95,6 @@ export class DataEduEeStack extends cdk.Stack {
 
     // Workshop Studio Bucket Prefix
     const wsBucketPrefix = "296c402e-cadd-43f5-956b-116895a050f9/";
-
-    // Demo Datasets Bucket ARN
-    const demoDatasetsBucketArn = "arn:aws:s3:::aws-edu-cop-data-demo-datasets";
-
-    // Demo Datasets Bucket Name
-    const demoDatasetsBucketName = "aws-edu-cop-data-demo-datasets";
-
-    // Demo Datasets Bucket Prefix
-    const demoDatasetsBucketPrefix = "data-edu/";
 
     // GUID for Raw, Curated, Results Bucket Names
     const GUID = cdk.Stack.of(this).stackId;
@@ -335,7 +326,7 @@ export class DataEduEeStack extends cdk.Stack {
     });
 
     // Create RDS Secret
-    const rdsSecret = new secretsmanager.Secret(this, "dataeduRDSSecret", {
+    const rdsSecret = new secretsmanager.Secret(this, "dataEDURDSSecret", {
       secretName: "dataedu-rds-secret",
       generateSecretString: {
         secretStringTemplate: JSON.stringify({ username: "admin" }),
@@ -593,9 +584,9 @@ export class DataEduEeStack extends cdk.Stack {
       description: "SSM Parameter for mock LMS integration.",
       stringValue:
         '{"base_url":"' +
-        demoDatasetsBucketName +
+        wsStaticBucket.bucketName +
         '.s3.amazonaws.com/' +
-        demoDatasetsBucketPrefix +
+        wsBucketPrefix +
         'v1/mockdata/lms_demo",' +
         '"version": "v1", "current_date": "2020-08-17", "perform_initial_load": "1",' +
         '"target_bucket":"' +
@@ -758,12 +749,12 @@ export class DataEduEeStack extends cdk.Stack {
       roleName: "dataedu-fetch-demo-data-role",
     });
 
-    // Add policies in order to read from demo datasets bucket and write to raw bucket
+    // Add policies in order to read and write to ee-assets and raw buckets
     fetchDemoDataLambdaRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ["s3:List*"],
         resources: [
-          demoDatasetsBucketArn,
+          wsStaticBucket.bucketArn,
           rawBucket.bucketArn,
         ],
       })
@@ -772,7 +763,7 @@ export class DataEduEeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["s3:GetObject"],
         resources: [
-          demoDatasetsBucketArn + "/*",
+          wsStaticBucket.bucketArn + "/*",
           rawBucket.bucketArn + "/*",
         ],
       })
@@ -784,20 +775,6 @@ export class DataEduEeStack extends cdk.Stack {
       })
     );
 
-    // Add policies to invoke Lambda function asynchronously
-    fetchDemoDataLambdaRole.addToPolicy(
-      new iam.PolicyStatement({
-        actions: ["lambda:InvokeFunction", "lambda:InvokeAsync"],
-        resources: [
-          "arn:aws:lambda:" +
-            cdk.Stack.of(this).region +
-            ":" +
-            cdk.Stack.of(this).account +
-            ":function:dataedu-*",
-        ],
-      })
-    );
-    
     // Add policies in order to create CloudWatch log group and log stream
     // https://aws.amazon.com/premiumsupport/knowledge-center/lambda-cloudwatch-log-streams-error/
     fetchDemoDataLambdaRole.addToPolicy(
@@ -841,9 +818,9 @@ export class DataEduEeStack extends cdk.Stack {
         timeout: cdk.Duration.seconds(900),
         role: fetchDemoDataLambdaRole,
         environment: {
-          SOURCE_DATA_BUCKET_NAME: demoDatasetsBucketName,
-          SIS_DEMO_MOCK_DATA_PREFIX: demoDatasetsBucketPrefix + 'v1/mockdata/sis_demo_parquet/',
-          LMS_DEMO_MOCK_DATA_PREFIX: demoDatasetsBucketPrefix + 'v1/mockdata/lms_demo/v1/',
+          SOURCE_DATA_BUCKET_NAME: wsStaticBucket.bucketName,
+          SIS_DEMO_MOCK_DATA_PREFIX: wsBucketPrefix + 'v1/mockdata/sis_demo_parquet/',
+          LMS_DEMO_MOCK_DATA_PREFIX: wsBucketPrefix + 'v1/mockdata/lms_demo/v1/',
           RAW_DATA_BUCKET_NAME: rawBucket.bucketName,
           SIS_DEMO_RAW_DATA_PREFIX: 'sisdb/sisdemo/',
           LMS_DEMO_RAW_DATA_PREFIX: 'lmsapi/'
@@ -883,7 +860,7 @@ export class DataEduEeStack extends cdk.Stack {
     const rawBucketPath = 's3://'+rawBucket.bucketName+'/';
 
     // lmsdemo_crawler: Crawls S3 target path; creates db_raw_lmsdemo tables
-    const lmsdemoCrawler = new glue.CfnCrawler(this, 'dataeduLmsdemoCrawler', {
+    const lmsdemoCrawler = new glue.CfnCrawler(this, 'dataedLmsdemoCrawler', {
       role: glueCrawlerRole.roleArn,
       targets: {
         s3Targets: [{

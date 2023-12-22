@@ -18,6 +18,7 @@
 
 import os
 import s3_util
+import lambda_util
 
 def get_env_vars():
     global profile_name
@@ -71,7 +72,7 @@ def lambda_handler(event, context):
     print("Total # of SIS demo source objects: %d" % num_sis_demo_source_object_names)
 
     # copy to SIS demo raw data objects
-    sis_demo_dest_object_names = s3_util.copy_s3_objects(profile_name, region_name, \
+    sis_demo_dest_object_names = lambda_util.copy_s3_objects_async(profile_name, region_name, \
         source_data_bucket_name, sis_demo_mock_data_prefix, sis_demo_source_object_names, \
         raw_data_bucket_name, sis_demo_raw_data_prefix)
     num_sis_demo_dest_object_names = len(sis_demo_dest_object_names)
@@ -89,7 +90,7 @@ def lambda_handler(event, context):
     print("Total # of LMS demo source objects: %d" % num_lms_demo_source_object_names)
     
     # copy to LMS demo raw data objects
-    lms_demo_dest_object_names = s3_util.copy_s3_objects(profile_name, region_name, \
+    lms_demo_dest_object_names = lambda_util.copy_s3_objects_async(profile_name, region_name, \
         source_data_bucket_name, lms_demo_mock_data_prefix, lms_demo_source_object_names, \
         raw_data_bucket_name, lms_demo_raw_data_prefix)
     num_lms_demo_dest_object_names = len(lms_demo_dest_object_names)
