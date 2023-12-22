@@ -217,7 +217,7 @@ def loadInitialData(tableName,dbName=""):
 
 def loadDataForTable(tableName):
     try:
-        dataURL = "https://ws-assets-prod-iad-r-iad-ed304a55c2ca1aee.s3.amazonaws.com/296c402e-cadd-43f5-956b-116895a050f9/v1/mockdata/sis_demo/{}/LOAD00000001.csv".format(tableName)
+        dataURL = "https://aws-edu-cop-data-demo-datasets.s3.amazonaws.com/data-edu/v1/mockdata/sis_demo/{}/LOAD00000001.csv".format(tableName)
         local_filename, headers = urllib.request.urlretrieve(dataURL)
         return local_filename
     except Exception as e:
