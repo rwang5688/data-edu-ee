@@ -2427,11 +2427,22 @@
         "Action": "s3:List*",
         "Effect": "Allow",
         "Resource": [
-         "arn:aws:s3:::aws-edu-cop-data-demo-datasets",
          {
           "Fn::GetAtt": [
            "dataeduRawBucket945ADDC3",
            "Arn"
+          ]
+         },
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":s3:::aws-edu-cop-data-demo-datasets"
+           ]
           ]
          }
         ]
@@ -2440,7 +2451,18 @@
         "Action": "s3:GetObject",
         "Effect": "Allow",
         "Resource": [
-         "arn:aws:s3:::aws-edu-cop-data-demo-datasets/*",
+         {
+          "Fn::Join": [
+           "",
+           [
+            "arn:",
+            {
+             "Ref": "AWS::Partition"
+            },
+            ":s3:::aws-edu-cop-data-demo-datasets/*"
+           ]
+          ]
+         },
          {
           "Fn::Join": [
            "",
@@ -2761,7 +2783,7 @@
    "CDKMetadata": {
     "Type": "AWS::CDK::Metadata",
     "Properties": {
-     "Analytics": "v2:deflate64:H4sIAAAAAAAA/31SwW7bMAz9lt4VNU1PPSbpVgTdCsMpch1omfPUyJIhUgkCwf9eyHKcpAV24nuPDyRFcSGfHuT8Do40U/V+ZnQl45ZB7cX6ry3AQ4uMPpG1s7Vm7Wwiv6HrtG0EHOlP1NDKWDqDKTPEwhmtTkOJAfVi35KMrzhoKSyNBkpkAL2gRxlXQe2RkziiHC7FbngmKyDsBaqFjLtOJdOuWIsiVEarbahsrndBpQuM71DlYbN+0ZZETmk4v3JIJPBjU6TwBvwCjEc4icLrAzBeCm8so7c4GfIkI1syg/rXomWxRRW85tOLd6EbZvivsLGNR0oLQuWRqQULDXoZtwMf/Qnl8A6+Qb7qNxm+Znrha5LxGRgqINxYYrAKRX7SNM3z6ptwtvaiTr+aFoWd0WrY2xf3VWbqkBZq687pNISBtqpBxl9wQr9DT+Pub/jPYNX5U65xgb7VlCy9IGrT6Xptm5u7nUgv8ICWScYyjLcaDPaiMQFlOnAPR5NsJZILPg96xr2wrkb5QfeHxVw+zOX87oO0nvlgWbcoyxw/AR7+SylPAwAA"
+     "Analytics": "v2:deflate64:H4sIAAAAAAAA/31Sy27bMBD8ltxp1nFPPdpOGxh9QJADX4sVtVUZU6TAXdowCP17QVEPJwF62pnZATlc7kZ+eZTrB7jSStXnldGVjEcGdRb7P7YADy0y+kT2ztaatbOJ/ISu07YRcKXfkT7LuAvqjLwDQpFhco0ol8IZrW6LnHkvNLQyls5gag11cU6ec0syfsdBS2VrNFAiA+gFqo2Mp04l6VTsRREqo9UxVDYHWVDpAuMLVPm6rC/alsgpDdMrh0YCXw9FKr+An4HxCjdReH0BxuXgg2X0FmdDTjKyLTOovy1aFkdUwWu+PXsXuiHDf4WDbTwS9YJQeWRqwUKDXsbjwEd/Qrm8gG+Q7+6bDe87vfA1yfgEDBUQHiwxWIUiP2lO87T7IEzWXtTpX9KgsDNaDXN7577rzDekgdq6czqFMNBWNcj4A27oT+hpnP0b/i1YNX3KPS7Qt5qSpRdEbVpdr23zZm9n0gu8oGWSsQzjtgWDvWhMQJkW3MPVJFuJ5ILPQSfcC+tqlK/06bJZy8e1XD+8ktYrHyzrFmWZ6z9QEqUdTwMAAA=="
     },
     "Metadata": {
      "aws:cdk:path": "DataeduEeStack/CDKMetadata/Default"

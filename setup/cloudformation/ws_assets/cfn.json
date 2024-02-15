@@ -361,7 +361,7 @@
         ],
         "Effect": "Allow",
         "Resource": {
-         "Ref": "dataEDURDSSecretA0904793"
+         "Ref": "dataeduRDSSecret4B8759F0"
         }
        }
       ],
@@ -514,7 +514,7 @@
         ],
         "Effect": "Allow",
         "Resource": {
-         "Ref": "dataEDURDSSecretA0904793"
+         "Ref": "dataeduRDSSecret4B8759F0"
         }
        },
        {
@@ -1819,7 +1819,7 @@
      "aws:cdk:path": "DataeduEeStack/dataeduVPC/VPCGW"
     }
    },
-   "dataEDURDSSecretA0904793": {
+   "dataeduRDSSecret4B8759F0": {
     "Type": "AWS::SecretsManager::Secret",
     "Properties": {
      "GenerateSecretString": {
@@ -1832,14 +1832,14 @@
     "UpdateReplacePolicy": "Delete",
     "DeletionPolicy": "Delete",
     "Metadata": {
-     "aws:cdk:path": "DataeduEeStack/dataEDURDSSecret/Resource"
+     "aws:cdk:path": "DataeduEeStack/dataeduRDSSecret/Resource"
     }
    },
-   "dataEDURDSSecretAttachment1F15340A": {
+   "dataeduRDSSecretAttachment9754FF49": {
     "Type": "AWS::SecretsManager::SecretTargetAttachment",
     "Properties": {
      "SecretId": {
-      "Ref": "dataEDURDSSecretA0904793"
+      "Ref": "dataeduRDSSecret4B8759F0"
      },
      "TargetId": {
       "Ref": "dataeduRDSInstance2BB1EFE2"
@@ -1847,7 +1847,7 @@
      "TargetType": "AWS::RDS::DBInstance"
     },
     "Metadata": {
-     "aws:cdk:path": "DataeduEeStack/dataEDURDSSecret/Attachment/Resource"
+     "aws:cdk:path": "DataeduEeStack/dataeduRDSSecret/Attachment/Resource"
     }
    },
    "dataeduRDSsg43029FA3": {
@@ -1990,7 +1990,7 @@
        [
         "{{resolve:secretsmanager:",
         {
-         "Ref": "dataEDURDSSecretA0904793"
+         "Ref": "dataeduRDSSecret4B8759F0"
         },
         ":SecretString:password::}}"
        ]
@@ -2002,7 +2002,7 @@
        [
         "{{resolve:secretsmanager:",
         {
-         "Ref": "dataEDURDSSecretA0904793"
+         "Ref": "dataeduRDSSecret4B8759F0"
         },
         ":SecretString:username::}}"
        ]
@@ -2081,7 +2081,7 @@
        ]
       },
       "SecretsManagerSecretId": {
-       "Ref": "dataEDURDSSecretA0904793"
+       "Ref": "dataeduRDSSecret4B8759F0"
       }
      }
     },
@@ -2146,7 +2146,7 @@
                  "Fn::Split": [
                   ":",
                   {
-                   "Ref": "dataEDURDSSecretA0904793"
+                   "Ref": "dataeduRDSSecret4B8759F0"
                   }
                  ]
                 }
@@ -2169,7 +2169,7 @@
                  "Fn::Split": [
                   ":",
                   {
-                   "Ref": "dataEDURDSSecretA0904793"
+                   "Ref": "dataeduRDSSecret4B8759F0"
                   }
                  ]
                 }
@@ -2192,7 +2192,7 @@
                  "Fn::Split": [
                   ":",
                   {
-                   "Ref": "dataEDURDSSecretA0904793"
+                   "Ref": "dataeduRDSSecret4B8759F0"
                   }
                  ]
                 }
@@ -2530,6 +2530,29 @@
         }
        },
        {
+        "Action": [
+         "lambda:InvokeAsync",
+         "lambda:InvokeFunction"
+        ],
+        "Effect": "Allow",
+        "Resource": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:lambda:",
+           {
+            "Ref": "AWS::Region"
+           },
+           ":",
+           {
+            "Ref": "AWS::AccountId"
+           },
+           ":function:dataedu-*"
+          ]
+         ]
+        }
+       },
+       {
         "Action": "logs:CreateLogGroup",
         "Effect": "Allow",
         "Resource": {
@@ -2724,7 +2747,7 @@
      "aws:cdk:path": "DataeduEeStack/dataeduGlueCrawlerRole/DefaultPolicy/Resource"
     }
    },
-   "dataedLmsdemoCrawler": {
+   "dataeduLmsdemoCrawler": {
     "Type": "AWS::Glue::Crawler",
     "Properties": {
      "DatabaseName": "db_raw_lmsdemo",
@@ -2756,7 +2779,7 @@
      }
     },
     "Metadata": {
-     "aws:cdk:path": "DataeduEeStack/dataedLmsdemoCrawler"
+     "aws:cdk:path": "DataeduEeStack/dataeduLmsdemoCrawler"
     }
    },
    "dataeduSisdemoCrawler": {
@@ -2797,7 +2820,7 @@
    "CDKMetadata": {
     "Type": "AWS::CDK::Metadata",
     "Properties": {
-     "Analytics": "v2:deflate64:H4sIAAAAAAAA/31Sy27jMAz8lt4VbdM97PaYpLtFsA8YTpFrQctcrxpLMvRIEBj+94qSnVeBnjhDjmlqyAf+OOf3d3BwM1HvZq2seL/xIHZs9U8XYEGhR0tkZXQtvTSayB/oOqkbFr977SUo3pemRaqkWJhWimNqkdDAdsrx/hemHIVFK8ERSWBg7ivvl0Hs0FNyRDmcm13xTJbgcGAoHni/7QSJtsWKFaGKmk2odO53RqUJHl+gysPm/Dm3cM4ICdMrU4HAj3VB4S/4Z/B4gCMrrNxHeG681tGniCdBnmRkCx8t/a9Qe7ZBEaz0x2drQpdm+DSx1o1FRwahsOidAg0N2rikxEc9oRxewDboL/53EtxWBmbruJMn8FBFE9faedACWX7SaZqn5YfEJB1YTVslo7CLfiffbtQXldMfyFBdd0bSEC2oqgbe/4Yj2i1aN3p/xX8GLaalXOICrZKOJNEgp+h0bTzLq7s9kXgm+/juOHEZxluNcWBNG5DTgVs4tCQr0Zlg86ATHpg2NfI392U//87n3/j87s1JObNBe6mQlzm+AwR8J89PAwAA"
+     "Analytics": "v2:deflate64:H4sIAAAAAAAA/31Sy27bMBD8ltxp1nFPPdpOGxh9QJADX4sVtVUZU6TAXdowCP17QVEPJwF62pnZATlc7kZ+eZTrB7jSStXnldGVjEcGdRb7P7YADy0y+kT2ztaatbOJ/ISu07YRcKXfkT7LuAvqjLwDQpFhco0ol8IZrW6LnHkvNLQyls5gag11cU6ec0syfsdBS2VrNFAiA+gFqo2Mp04l6VTsRREqo9UxVDYHWVDpAuMLVPm6rC/alsgpDdMrh0YCXw9FKr+An4HxCjdReH0BxuXgg2X0FmdDTjKyLTOovy1aFkdUwWu+PXsXuiHDf4WDbTwS9YJQeWRqwUKDXsbjwEd/Qrm8gG+Q7+6bDe87vfA1yfgEDBUQHiwxWIUiP2lO87T7IEzWXtTpX9KgsDNaDXN7577rzDekgdq6czqFMNBWNcj4A27oT+hpnP0b/i1YNX3KPS7Qt5qSpRdEbVpdr23zZm9n0gu8oGWSsQzjtgWDvWhMQJkW3MPVJFuJ5ILPQSfcC+tqlK/06bJZy8e1XD+8ktYrHyzrFmWZ6z9QEqUdTwMAAA=="
     },
     "Metadata": {
      "aws:cdk:path": "DataeduEeStack/CDKMetadata/Default"
