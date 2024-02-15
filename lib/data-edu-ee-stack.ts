@@ -91,20 +91,35 @@ export class DataEduEeStack extends cdk.Stack {
         },
       }
     });
+
+    // Workshop Studio Bucket Name
     const wsStaticBucketName = wsStaticBucketNameTable.findInMap(cdk.Aws.REGION, 'wsStaticBucketName');
 
-    // Workshop Studio Bucket Prefix
-    const wsBucketPrefix = "296c402e-cadd-43f5-956b-116895a050f9/";
+    // Workshop Studio Static Bucket ARN
+    const wsStaticBucket = s3.Bucket.fromBucketName(
+      this,
+      "dataeduWSStaticBucketName",
+      wsStaticBucketName
+    );
+    const wsStaticBucketArn = wsStaticBucket.bucketArn;
 
-    // Demo Datasets Bucket ARN
-    const demoDatasetsBucketArn = "arn:aws:s3:::aws-edu-cop-data-demo-datasets";
+    // Workshop Studio Bucket Prefix
+    const wsStaticBucketPrefix = "296c402e-cadd-43f5-956b-116895a050f9/";
 
     // Demo Datasets Bucket Name
     const demoDatasetsBucketName = "aws-edu-cop-data-demo-datasets";
 
+    // Demo Datasets Bucket ARN
+    const demoDatasetsBucket = s3.Bucket.fromBucketName(
+      this,
+      "dataeduDemoDatasetsBucketName",
+      demoDatasetsBucketName
+    );
+    const demoDatasetsBucketArn = demoDatasetsBucket.bucketArn;
+
     // Demo Datasets Bucket Prefix
     const demoDatasetsBucketPrefix = "data-edu/";
-
+    
     // GUID for Raw, Curated, Results Bucket Names
     const GUID = cdk.Stack.of(this).stackId;
 
@@ -477,13 +492,6 @@ export class DataEduEeStack extends cdk.Stack {
       }
     );*/
 
-    // Set Workshop Studio Static Bucket
-    const wsStaticBucket = s3.Bucket.fromBucketName(
-      this,
-      "dataeduWSStaticBucketName",
-      wsStaticBucketName
-    );
-
     // Create SIS Import Lambda Function Layer for MySQL
     const sisLambdaLayer = new lambda.LayerVersion(
       this,
@@ -491,7 +499,7 @@ export class DataEduEeStack extends cdk.Stack {
       {
         code: lambda.Code.fromBucket(
           wsStaticBucket,
-          wsBucketPrefix + "v1/lambda/mysql_layer.zip"
+          wsStaticBucketPrefix + "v1/lambda/mysql_layer.zip"
         ),
         compatibleRuntimes: [
           lambda.Runtime.PYTHON_3_9,
@@ -506,7 +514,7 @@ export class DataEduEeStack extends cdk.Stack {
       {
         code: lambda.Code.fromBucket(
           wsStaticBucket,
-          wsBucketPrefix + "v1/lambda/dataedu-load-sisdb.zip"
+          wsStaticBucketPrefix + "v1/lambda/dataedu-load-sisdb.zip"
         ),
         runtime: lambda.Runtime.PYTHON_3_9,
         handler: "lambda_function.lambda_handler",
@@ -593,9 +601,9 @@ export class DataEduEeStack extends cdk.Stack {
       description: "SSM Parameter for mock LMS integration.",
       stringValue:
         '{"base_url":"' +
-        demoDatasetsBucketName +
+        wsStaticBucketName +
         '.s3.amazonaws.com/' +
-        demoDatasetsBucketPrefix +
+        wsStaticBucketPrefix +
         'v1/mockdata/lms_demo",' +
         '"version": "v1", "current_date": "2020-08-17", "perform_initial_load": "1",' +
         '"target_bucket":"' +
@@ -610,7 +618,7 @@ export class DataEduEeStack extends cdk.Stack {
       {
         code: lambda.Code.fromBucket(
           wsStaticBucket,
-          wsBucketPrefix + "v1/lambda/dataedu-fetch-s3-data.zip"
+          wsStaticBucketPrefix + "v1/lambda/dataedu-fetch-s3-data.zip"
         ),
         runtime: lambda.Runtime.PYTHON_3_9,
         handler: "lambda_handler.lambda_handler",
@@ -670,7 +678,7 @@ export class DataEduEeStack extends cdk.Stack {
       {
         code: lambda.Code.fromBucket(
           wsStaticBucket,
-          wsBucketPrefix + "v1/lambda/dataedu-fetch-lmsapi.zip"
+          wsStaticBucketPrefix + "v1/lambda/dataedu-fetch-lmsapi.zip"
         ),
         runtime: lambda.Runtime.PYTHON_3_9,
         handler: "lambda_function.lambda_handler",
@@ -763,7 +771,7 @@ export class DataEduEeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["s3:List*"],
         resources: [
-          demoDatasetsBucketArn,
+          wsStaticBucketArn,
           rawBucket.bucketArn,
         ],
       })
@@ -772,7 +780,7 @@ export class DataEduEeStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["s3:GetObject"],
         resources: [
-          demoDatasetsBucketArn + "/*",
+          wsStaticBucketArn + "/*",
           rawBucket.bucketArn + "/*",
         ],
       })
@@ -832,7 +840,7 @@ export class DataEduEeStack extends cdk.Stack {
       {
         code: lambda.Code.fromBucket(
           wsStaticBucket,
-          wsBucketPrefix + "v1/lambda/dataedu-fetch-demo-data.zip"
+          wsStaticBucketPrefix + "v1/lambda/dataedu-fetch-demo-data.zip"
         ),
         runtime: lambda.Runtime.PYTHON_3_9,
         handler: "dataedu_fetch_demo_data.lambda_handler",
@@ -841,9 +849,9 @@ export class DataEduEeStack extends cdk.Stack {
         timeout: cdk.Duration.seconds(900),
         role: fetchDemoDataLambdaRole,
         environment: {
-          SOURCE_DATA_BUCKET_NAME: demoDatasetsBucketName,
-          SIS_DEMO_MOCK_DATA_PREFIX: demoDatasetsBucketPrefix + 'v1/mockdata/sis_demo_parquet/',
-          LMS_DEMO_MOCK_DATA_PREFIX: demoDatasetsBucketPrefix + 'v1/mockdata/lms_demo/v1/',
+          SOURCE_DATA_BUCKET_NAME: wsStaticBucketName,
+          SIS_DEMO_MOCK_DATA_PREFIX: wsStaticBucketPrefix + 'v1/mockdata/sis_demo_parquet/',
+          LMS_DEMO_MOCK_DATA_PREFIX: wsStaticBucketPrefix + 'v1/mockdata/lms_demo/v1/',
           RAW_DATA_BUCKET_NAME: rawBucket.bucketName,
           SIS_DEMO_RAW_DATA_PREFIX: 'sisdb/sisdemo/',
           LMS_DEMO_RAW_DATA_PREFIX: 'lmsapi/'
